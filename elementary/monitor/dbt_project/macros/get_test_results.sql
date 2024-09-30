@@ -51,7 +51,6 @@
             test_results.result_rows
         from ordered_test_results as test_results
         where test_results.invocations_rank_index <= {{ invocations_per_test }}
-        order by test_results.elementary_unique_id, test_results.invocations_rank_index desc
     {%- endset -%}
 
     {% set test_results = [] %}
