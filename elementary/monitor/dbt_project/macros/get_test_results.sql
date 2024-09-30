@@ -2,9 +2,8 @@
     {% set elementary_tests_allowlist_status = ['fail', 'warn'] if disable_passed_test_metrics else ['fail', 'warn', 'pass']  %}
     
     {% set select_test_results %}
-        with test_results as (
-            {{ elementary_cli.current_tests_run_results_query(days_back=days_back) }}
-        ),
+        {{ elementary_cli.current_tests_run_results_query(days_back=days_back) }},
+
 
         ordered_test_results as (
             select
