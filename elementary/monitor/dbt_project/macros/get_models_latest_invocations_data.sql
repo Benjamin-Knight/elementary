@@ -5,10 +5,11 @@
   {% set query %}
     with ordered_run_results as (
       select
-        *,
-        row_number() over (partition by unique_id order by run_results.generated_at desc) as row_number
+        run_results.*,
+        row_number() over (partition by run_results.unique_id order by run_results.generated_at desc) as row_number
       from {{ ref("elementary", "dbt_run_results") }} run_results
-      join {{ ref("elementary", "dbt_models") }} using (unique_id)
+      join {{ ref("elementary", "dbt_models") }} models
+      ON run_results.unique_id = models.unique_id
     ),
 
     latest_models_invocations as (
@@ -18,7 +19,7 @@
     )
 
     select
-      invocation_id,
+      invocations.invocation_id,
       command,
       selected,
       full_refresh,
@@ -29,7 +30,8 @@
       job_id,
       orchestrator
     from {{ invocations_relation }} invocations
-    join latest_models_invocations using (invocation_id)
+    join latest_models_invocations 
+    ON invocations.invocation_id = latest_models_invocations.invocation_id
   {% endset %}
   {% set result = elementary.run_query(query) %}
   {% do return(elementary.agate_to_dicts(result)) %}
