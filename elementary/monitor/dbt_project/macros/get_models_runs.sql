@@ -11,7 +11,7 @@
             unique_id, 
             invocation_id,
             name,
-            schema_name as schema,
+            schema_name as {{ elementary.edr_quote_column('schema') }},
             status,
             case
                 when status != 'success' then 0
